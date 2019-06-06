@@ -1,7 +1,6 @@
 <?php
 
-namespace App\AUthenticationSuccessListener;
-
+namespace App\Listeners\AuthenticationSuccessListener;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -9,17 +8,25 @@ use Symfony\Component\HttpFoundation\Cookie;
 class AuthenticationSuccessListener{
 
     private $secure = false;
+    private $tokenTtl;
+
+    public function __construct($tokenTtl)
+    {
+        $this->tokenTtl = $tokenTtl;
+    }
 
     public function onAuthenticationSuccess(AuthenticationSuccessEvent $event) {
         $response = $event ->getResponse();
-
         $data = $event->getData();
 
         $token = $data['token'];
+        unset($data['token']);
+        unset($data['refresh_token']);
+        $event->setData($data);
 
         $response->headers->setCookie(
-            new Cookie('Bearer', $token, (new \DateTime())->add(new \DateInterval('PT' . 3600 . 'S'))),
-            '/', null
+            new Cookie('BEARER', $token, (new \DateTime())->add(new \DateInterval('PT' . $this->tokenTtl . 'S'))),
+            '/', null, $this->secure
         );
     }
 }
