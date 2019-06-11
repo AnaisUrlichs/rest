@@ -20,12 +20,17 @@ security:
             stateless: true
             anonymous: true
             json_login:
-                check_path: /api/login_check
+                check_path: api_login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
         refresh:
             pattern: ^/api/token/refresh
+            stateless: true
+            anonymous: true
+
+        register:
+            pattern:  ^/register
             stateless: true
             anonymous: true
 

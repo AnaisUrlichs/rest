@@ -17,11 +17,11 @@ fos_rest:
 #      default_format: json
 #      include_format: false
 #
-#    format_listener:
-#        rules:
-#           - { path: '^/', priorities: ['json'], fallback_format: json}
-#    exception:
-#      enabled: true
+    format_listener:
+        rules:
+           - { path: '^/', priorities: ['json'], fallback_format: json}
+    exception:
+        enabled: true
 
 
 ##    view:

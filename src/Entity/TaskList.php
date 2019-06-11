@@ -39,9 +39,19 @@ class TaskList
     private $tasks;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="lists")
+     */
+    private $user;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $backgroundPath;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Preference", mappedBy="list", cascade={"PERSIST", "REMOVE"})
+     */
+    private $preferences;
 
     public function __construct()
     {
@@ -115,6 +125,36 @@ class TaskList
             if ($task->getList() === $this) {
                 $task->setList(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getPreferences(): ?Preference
+    {
+        return $this->preferences;
+    }
+
+    public function setPreferences(?Preference $preferences): self
+    {
+        $this->preferences = $preferences;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newList = $preferences === null ? null : $this;
+        if ($newList !== $preferences->getList()) {
+            $preferences->setList($newList);
         }
 
         return $this;
